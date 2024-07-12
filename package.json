@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "npm run compile",
     "compile": "tsc",
-    "start": "nodemon run compile && node ./dist/index.js"
+    "start": "yarn install && nodemon run compile && node ./dist/index.js"
   },
   "keywords": [],
   "author": "",

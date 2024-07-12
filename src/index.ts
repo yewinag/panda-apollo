@@ -29,11 +29,27 @@ const typeDefs = `#graphql
     cover_path: String
     backdrop_path: String
   }
+  type Ads {
+    id: ID
+    name: String
+    image: String
+    link: String
+  }
 
   type Query {
-    films: [Movie]
+    latest: [Movie]
+    anime: [Movie]
+    tv_shows: [Movie]
+    movies: [Movie]
+    ads: [Ads]
   }
 `;
+
+const adsSchema = new mongoose.Schema({
+  name: String,
+  image: String,
+  link: String,
+});
 
 const movieSchema = new mongoose.Schema({
   name: String,
@@ -45,10 +61,21 @@ const movieSchema = new mongoose.Schema({
   backdrop_path: String,
 });
 const MovieModel = mongoose.model('Movies', movieSchema);
-
+const AdsModel = mongoose.model('Ads', adsSchema);
+const homepageLimit = 10;
+const homepageAdsLimit = 5;
 const resolvers = {
   Query: {
-    films: async () => await MovieModel.find({}),
+    latest: async () =>
+      await MovieModel.find({})
+        .sort({ released_date: -1 })
+        .limit(homepageLimit),
+    anime: async () => await MovieModel.find({}).limit(homepageLimit),
+    tv_shows: async () =>
+      await MovieModel.find({ show_type: 'tv_show' }).limit(homepageLimit),
+    movies: async () => await MovieModel.find({}).limit(homepageLimit),
+    ads: async () =>
+      await AdsModel.find({}).sort({ createdAt: 1 }).limit(homepageAdsLimit),
   },
 };
 
