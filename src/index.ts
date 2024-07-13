@@ -42,6 +42,7 @@ const typeDefs = `#graphql
     tv_shows: [Movie]
     movies: [Movie]
     ads: [Ads]
+    carousel: [Movie]
   }
 `;
 
@@ -63,7 +64,7 @@ const movieSchema = new mongoose.Schema({
 const MovieModel = mongoose.model('Movies', movieSchema);
 const AdsModel = mongoose.model('Ads', adsSchema);
 const homepageLimit = 10;
-const homepageAdsLimit = 5;
+const homepageAdsLimit = 10;
 const resolvers = {
   Query: {
     latest: async () =>
@@ -74,8 +75,8 @@ const resolvers = {
     tv_shows: async () =>
       await MovieModel.find({ show_type: 'tv_show' }).limit(homepageLimit),
     movies: async () => await MovieModel.find({}).limit(homepageLimit),
-    ads: async () =>
-      await AdsModel.find({}).sort({ createdAt: 1 }).limit(homepageAdsLimit),
+    ads: async () => await AdsModel.find({}).sort({ createdAt: 1 }),
+    carousel: async () => await MovieModel.find({}).limit(homepageLimit),
   },
 };
 
